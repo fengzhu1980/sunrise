@@ -3,14 +3,16 @@ using System;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(SunriseContext))]
-    partial class SunriseContextModelSnapshot : ModelSnapshot
+    [Migration("20210815012353_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,7 +174,7 @@ namespace Infrastructure.Data.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime?>("LastModifiedOnUtc")
+                    b.Property<DateTime>("LastModifiedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("LastUpdatedByStaffId")
@@ -214,10 +216,10 @@ namespace Infrastructure.Data.Migrations
                         .HasMaxLength(36)
                         .HasColumnType("varchar(36)");
 
-                    b.Property<DateTime?>("ActualEndedOnUtc")
+                    b.Property<DateTime>("ActualEndedOnUtc")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("ActualStartedOnUtc")
+                    b.Property<DateTime>("ActualStartedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Address")
@@ -260,10 +262,10 @@ namespace Infrastructure.Data.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool?>("IsCompleted")
+                    b.Property<bool>("IsCompleted")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool?>("IsRescheduled")
+                    b.Property<bool>("IsRescheduled")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("JobCode")
@@ -275,7 +277,7 @@ namespace Infrastructure.Data.Migrations
                         .HasMaxLength(36)
                         .HasColumnType("varchar(36)");
 
-                    b.Property<DateTime?>("LastModifiedOnUtc")
+                    b.Property<DateTime>("LastModifiedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("LastName")
@@ -300,10 +302,10 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("RescheduledReason")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("ScheduledEndedOnUtc")
+                    b.Property<DateTime>("ScheduledEndedOnUtc")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime?>("ScheduledStartedOnUtc")
+                    b.Property<DateTime>("ScheduledStartedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("StageId")
@@ -509,7 +511,7 @@ namespace Infrastructure.Data.Migrations
                         .HasMaxLength(36)
                         .HasColumnType("varchar(36)");
 
-                    b.Property<DateTime?>("LastUpdatedOnUtc")
+                    b.Property<DateTime>("LastUpdatedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Title")
@@ -561,7 +563,7 @@ namespace Infrastructure.Data.Migrations
                         .HasMaxLength(36)
                         .HasColumnType("varchar(36)");
 
-                    b.Property<DateTime?>("LastUpdatedOnUtc")
+                    b.Property<DateTime>("LastUpdatedOnUtc")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Name")
@@ -630,7 +632,7 @@ namespace Infrastructure.Data.Migrations
                     b.Property<bool?>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool?>("IsAdmin")
+                    b.Property<bool>("IsAdmin")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LastName")
@@ -714,7 +716,7 @@ namespace Infrastructure.Data.Migrations
                     b.Property<decimal>("Duration")
                         .HasColumnType("decimal(65,30)");
 
-                    b.Property<bool?>("IsActive")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
