@@ -1,5 +1,4 @@
 using System;
-using Core.DataModels;
 
 namespace Core.Entities
 {

@@ -1,3 +1,4 @@
+using API.Helpers;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
@@ -23,6 +24,8 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IJobRepository, JobRepository>();
+            services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
+            services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
             var sunriseConnectionString = _configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<SunriseContext>(x => x.UseMySql(sunriseConnectionString, ServerVersion.AutoDetect(sunriseConnectionString)));
@@ -45,6 +48,7 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 

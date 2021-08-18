@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Core.DataModels
+namespace Core.Entities
 {
     public class BaseDataModel
     {
