@@ -14,7 +14,10 @@ namespace Infrastructure.Data
             {
                 query = query.Where(spec.Criteria);
             }
+
             query = spec.Includes.Aggregate(query, (current, include) => current.Include(include).AsSplitQuery());
+
+            query = spec.IncludeStrings.Aggregate(query, (current, include) => current.Include(include));
             return query;
         }
     }

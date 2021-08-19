@@ -12,11 +12,17 @@ namespace Core.Specifications
             AddInclude(x => x.LastModifiedByStaff);
             AddInclude(x => x.JobStage);
             AddInclude(x => x.BeforePhotos);
+            AddInclude("BeforePhotos.Document");
             AddInclude(x => x.AfterPhotos);
+            AddInclude("AfterPhotos.Document");
             AddInclude(x => x.RelatedNotes);
+            AddInclude("RelatedNotes.Note");
             AddInclude(x => x.JobHazards);
+            AddInclude("JobHazards.Hazard");
             AddInclude(x => x.JobTasks);
+            AddInclude("JobTasks.Task");
             AddInclude(x => x.JobLogs);
+            AddInclude("JobLogs.Log");
         }
 
         public JobsWithAllInfosSpecification(string id) : base(x => x.Id == id)

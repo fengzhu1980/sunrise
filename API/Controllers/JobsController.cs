@@ -5,14 +5,13 @@ using Core.Interfaces;
 using Core.Specifications;
 using Microsoft.AspNetCore.Mvc;
 using API.Dtos;
-using System.Linq;
 using AutoMapper;
+using API.Errors;
+using Microsoft.AspNetCore.Http;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class JobsController : ControllerBase
+    public class JobsController : BaseApiController
     {
         private readonly IGenericRepository<Job> _jobRepo;
         private readonly IMapper _mapper;
@@ -32,10 +31,14 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<JobToReturnDto>> GetJob(string id)
         {
             var spec = new JobsWithAllInfosSpecification(id);
             var job = await _jobRepo.GetEntityWithSpec(spec);
+
+            if (job == null) return NotFound(new ApiResponse(404));
 
             return _mapper.Map<Job, JobToReturnDto>(job);
         }
