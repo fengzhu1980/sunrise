@@ -8,6 +8,8 @@ using API.Dtos;
 using AutoMapper;
 using API.Errors;
 using Microsoft.AspNetCore.Http;
+using Core.DataModels.Models;
+using API.Helpers;
 
 namespace API.Controllers
 {
@@ -22,12 +24,17 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IReadOnlyList<JobToReturnDto>>> GetJobs()
+        public async Task<ActionResult<Pagination<JobToReturnDto>>> GetJobs([FromQuery]GetJobsFilterModel filterModel)
         {
-            var spec = new JobsWithStaffsSpecification();
-            var jobs = await _jobRepo.ListAsync(spec);
+            var spec = new JobsWithAllInfosSpecification(filterModel);
+            var countSpec = new JobWithFiltersForCountSpecification(filterModel);
 
-            return Ok(_mapper.Map<IReadOnlyList<Job>, IReadOnlyList<JobToReturnDto>>(jobs));
+            var jobs = await _jobRepo.ListAsync(spec);
+            var totalItems = await _jobRepo.CountAsync(countSpec);
+
+            var data = _mapper.Map<IReadOnlyList<Job>, IReadOnlyList<JobToReturnDto>>(jobs);
+
+            return Ok(new Pagination<JobToReturnDto>(filterModel.PageNo, filterModel.PageSize, totalItems, data));
         }
 
         [HttpGet("{id}")]
@@ -35,7 +42,7 @@ namespace API.Controllers
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<JobToReturnDto>> GetJob(string id)
         {
-            var spec = new JobsWithAllInfosSpecification(id);
+            var spec = new JobWithAllInforsSpecification(id);
             var job = await _jobRepo.GetEntityWithSpec(spec);
 
             if (job == null) return NotFound(new ApiResponse(404));
