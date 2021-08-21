@@ -2,6 +2,7 @@ using API.Extensions;
 using API.Helpers;
 using API.Middleware;
 using Infrastructure.Data;
+using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -27,8 +28,14 @@ namespace API
             services.AddControllers();
             var sunriseConnectionString = _configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<SunriseContext>(x => x.UseMySql(sunriseConnectionString, ServerVersion.AutoDetect(sunriseConnectionString)));
+            var identityConnectionString = _configuration.GetConnectionString("IdentityConnection");
+            services.AddDbContext<AppIdentityDbContext>(x =>
+            {
+                x.UseMySql(identityConnectionString, ServerVersion.AutoDetect(identityConnectionString), t => t.EnableStringComparisonTranslations());
+            });
 
             services.AddApplicationServices();
+            services.AddIdentityServices(_configuration);
             services.AddSwaggerDocumentation();
             services.AddCors(opt =>
             {
@@ -59,6 +66,7 @@ namespace API
 
             app.UseCors("CorsPolicy");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

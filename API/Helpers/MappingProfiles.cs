@@ -1,6 +1,7 @@
 using API.Dtos;
 using AutoMapper;
 using Core.Entities;
+using Core.Entities.Identity;
 
 namespace API.Helpers
 {
@@ -15,6 +16,8 @@ namespace API.Helpers
             CreateMap<Document, DocumentToReturnDto>()
                 .ForMember(d => d.UploadedByStaff, o => o.MapFrom(s => s.UploadedByStaff.FirstName))
                 .ForMember(d => d.DocumentUrl, o => o.MapFrom<DocumentUrlResolver>());
+
+            CreateMap<AppUser, UserDto>().ReverseMap();
         }
     }
 }

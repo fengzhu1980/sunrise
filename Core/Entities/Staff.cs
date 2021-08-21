@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Core.Entities.Identity;
+
 namespace Core.Entities
 {
     public class Staff : BaseDataModel

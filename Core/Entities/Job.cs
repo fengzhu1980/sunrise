@@ -31,12 +31,12 @@ namespace Core.Entities
         public string CreatedByStaffId { get; set; }
         [MaxLength(36)]
         public string LastModifiedByStaffId { get; set; }
-        public bool? IsCompleted { get; set; }
+        public bool IsCompleted { get; set; }
         public bool? IsRescheduled { get; set; }
         public string Notes { get; set; }
         public string RescheduledReason { get; set; }
         public string StageId { get; set; }
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
         [MaxLength(36)]
         public string CustomerId { get; set; }
         [MaxLength(36)]
