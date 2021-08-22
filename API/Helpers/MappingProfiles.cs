@@ -17,7 +17,7 @@ namespace API.Helpers
                 .ForMember(d => d.UploadedByStaff, o => o.MapFrom(s => s.UploadedByStaff.FirstName))
                 .ForMember(d => d.DocumentUrl, o => o.MapFrom<DocumentUrlResolver>());
 
-            CreateMap<AppUser, UserDto>().ReverseMap();
+            // CreateMap<AppUser, UserDto>().ReverseMap();
         }
     }
 }
