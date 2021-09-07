@@ -9,8 +9,10 @@ namespace Infrastructure.Data
     public class JobRepository : IJobRepository
     {
         private readonly SunriseContext _context;
-        public JobRepository(SunriseContext context)
+        private readonly IUnitOfWork _unitOfWork;
+        public JobRepository(SunriseContext context, IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _context = context;
         }
 

@@ -7,7 +7,13 @@ namespace Core.DataModels.Models
         public string Keyword
         {
             get => _keyword;
-            set => _keyword = value.ToLower();
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    _keyword = value.ToLower();
+                }
+            }
         }
         public int PageNo { get; set; } = 1;
         private int _pageSize = 50;

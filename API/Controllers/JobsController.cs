@@ -10,6 +10,8 @@ using API.Errors;
 using Microsoft.AspNetCore.Http;
 using Core.DataModels.Models;
 using API.Helpers;
+using Microsoft.AspNetCore.Identity;
+using Core.Entities.Identity;
 
 namespace API.Controllers
 {
@@ -17,7 +19,13 @@ namespace API.Controllers
     {
         private readonly IGenericRepository<Job> _jobRepo;
         private readonly IMapper _mapper;
-        public JobsController(IGenericRepository<Job> jobRepo, IMapper mapper)
+
+        public JobsController(
+            UserManager<AppUser> userManager,
+            IGenericRepository<Staff> staffRepo,
+            IGenericRepository<Job> jobRepo,
+            IMapper mapper
+        ) : base(userManager, staffRepo)
         {
             _mapper = mapper;
             _jobRepo = jobRepo;

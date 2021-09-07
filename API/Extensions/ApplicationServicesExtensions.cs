@@ -13,6 +13,8 @@ namespace API.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IJobRepository, JobRepository>();
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
             services.Configure<ApiBehaviorOptions>(options =>

@@ -1,6 +1,7 @@
 using API.Extensions;
 using API.Helpers;
 using API.Middleware;
+using Core.DataModels.Models;
 using Infrastructure.Data;
 using Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
@@ -26,6 +27,11 @@ namespace API
         {
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
+
+            AuthenticationConfiguration authenticationConfiguration = new AuthenticationConfiguration();
+            _configuration.Bind("Token", authenticationConfiguration);
+            services.AddSingleton(authenticationConfiguration);
+
             var sunriseConnectionString = _configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<SunriseContext>(x => x.UseMySql(sunriseConnectionString, ServerVersion.AutoDetect(sunriseConnectionString)));
             var identityConnectionString = _configuration.GetConnectionString("IdentityConnection");
@@ -42,7 +48,7 @@ namespace API
                 opt.AddPolicy("CorsPolicy", policy =>
                 {
                     // policy.AllowAnyHeader().AllowAnyMethod();
-                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:9527");
                 });
             });
         }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entities
 {
-    public class HazardSWMS
+    public class HazardSWMS : BaseEntity
     {
         [MaxLength(36)]
         public string HazardId { get; set; }

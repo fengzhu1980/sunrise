@@ -2,6 +2,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using API.Dtos;
 using API.Errors;
+using Core.DataModels.Models;
+using Core.Entities;
 using Core.Entities.Identity;
 using Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -13,27 +15,34 @@ namespace API.Controllers
     public class AccountController : BaseApiController
     {
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService)
+
+        public AccountController(
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signInManager,
+            ITokenService tokenService,
+            IGenericRepository<Staff> staffRepo
+        ) : base(userManager, staffRepo)
         {
             _tokenService = tokenService;
-            _userManager = userManager;
             _signInManager = signInManager;
         }
 
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        public async Task<UserDto> GetCurrentUser()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _userManager.FindByEmailAsync(email);
 
+            var tempToken = _tokenService.CreateToken(user);
             return new UserDto
             {
                 DisplayName = user.DisplayName,
-                Token = _tokenService.CreateToken(user),
-                Email = user.Email
+                Token = tempToken.Token,
+                ExpiresIn = tempToken.ExpiresIn,
+                Email = user.Email,
+                UserId = user.Id
             };
         }
 
@@ -51,12 +60,26 @@ namespace API.Controllers
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
             if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
 
-            return new UserDto
+            var tempToken = _tokenService.CreateToken(user);
+            var returnValue = new UserDto
             {
+                UserId = user.Id,
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user),
+                Token = tempToken.Token,
+                ExpiresIn = tempToken.ExpiresIn,
+                RefreshToken = _tokenService.GenerateRefreshToken().Token,
                 DisplayName = user.DisplayName
             };
+
+            RefreshToken refreshToken = new RefreshToken()
+            {
+                Token = returnValue.RefreshToken,
+                UserId = user.Id
+            };
+
+            await _tokenService.AddRefreshToken(refreshToken);
+
+            return returnValue;
         }
 
         [HttpPost("register")]
@@ -76,12 +99,79 @@ namespace API.Controllers
             var result = await _userManager.CreateAsync(user, registerDto.Password);
             if (!result.Succeeded) return BadRequest(new ApiResponse(400));
 
+            var tempToken = _tokenService.CreateToken(user);
             return new UserDto
             {
                 DisplayName = user.DisplayName,
-                Token = _tokenService.CreateToken(user),
+                Token = tempToken.Token,
+                ExpiresIn = tempToken.ExpiresIn,
                 Email = user.Email
             };
+        }
+
+        [HttpPost("refresh")]
+        public async Task<ActionResult<AuthenticatedUserResponse>> Refresh(RefreshToken refreshToken)
+        {
+            if (refreshToken.Token == null)
+            {
+                return new BadRequestObjectResult(new ApiValidationErrorResponse{Errors = new []{"Refresh token can not be null"}});
+            }
+            else if (refreshToken.UserId == null)
+            {
+                return new BadRequestObjectResult(new ApiValidationErrorResponse{Errors = new []{"User id can not be null"}});
+            }
+            else
+            {
+                bool isValidRefreshToken = _tokenService.Validate(refreshToken.Token);
+                if (!isValidRefreshToken)
+                {
+                    return new BadRequestObjectResult(new ApiValidationErrorResponse{Errors = new []{"Invalid refresh token"}});
+                }
+
+                // RefreshToken refreshTokenDTO = await _tokenService.GetRefreshTokenByToken(refreshToken.Token);
+                // if (refreshTokenDTO == null)
+                // {
+                //     return new BadRequestObjectResult(new ApiValidationErrorResponse{Errors = new []{"Invalid refresh token"}});
+                // }
+
+                var user = await _userManager.FindByIdAsync(refreshToken.UserId);
+                
+                var accessToken = _tokenService.CreateToken(user);
+                var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+                RefreshToken refreshTokenNew = new RefreshToken()
+                {
+                    Token = newRefreshToken.Token,
+                    UserId = user.Id
+                };
+
+                // Delete old refresh token
+                // await _tokenService.DeleteRefreshTokenById(refreshTokenDTO.Id);
+
+                // Add new refresh token
+                // await _tokenService.AddRefreshToken(refreshTokenNew);
+
+                AuthenticatedUserResponse response = new AuthenticatedUserResponse()
+                {
+                    AccessToken = accessToken.Token,
+                    RefreshToken = newRefreshToken.Token,
+                    ExpiresIn = accessToken.ExpiresIn
+                };
+
+                return response;
+            }
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            var user = await GetCurrentUser();
+
+            // Delete old refresh token
+            await _tokenService.DeleteRefreshTokenByUserId(user.UserId);
+
+            return Ok();
         }
 
         // [Authorize]

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseDataModel
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
         private readonly SunriseContext _context;
         public GenericRepository(SunriseContext context)
@@ -44,6 +44,32 @@ namespace Infrastructure.Data
         public async Task<int> CountAsync(ISpecification<T> spec)
         {
             return await ApplySpecification(spec).CountAsync();
+        }
+
+        public void Add(T entity)
+        {
+            _context.Set<T>().Add(entity);
+        }
+
+        public void Update(T entity)
+        {
+            _context.Set<T>().Attach(entity);
+            _context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public void Delete(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+        }
+
+        public void AddList(IReadOnlyList<T> entities)
+        {
+            _context.Set<T>().AddRange(entities);
+        }
+
+        public void DeleteList(IReadOnlyList<T> entities)
+        {
+            _context.Set<T>().RemoveRange(entities);
         }
     }
 }

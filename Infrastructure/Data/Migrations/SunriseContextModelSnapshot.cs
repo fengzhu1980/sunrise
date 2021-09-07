@@ -257,10 +257,10 @@ namespace Infrastructure.Data.Migrations
                     b.Property<bool?>("HasBeenReassigned")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool?>("IsActive")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool?>("IsCompleted")
+                    b.Property<bool>("IsCompleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool?>("IsRescheduled")
@@ -616,6 +616,7 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("varchar(36)");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("FirstName")
@@ -640,6 +641,9 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Mobile")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Note")
                         .HasColumnType("longtext");
 
                     b.Property<string>("PhoneNumber")

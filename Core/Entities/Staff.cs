@@ -14,6 +14,7 @@ namespace Core.Entities
         public string LastName { get; set; }
         public string Mobile { get; set; }
         public string PhoneNumber { get; set; }
+        [Required]
         public string Email { get; set; }
         public string StaffCode { get; set; }
         public string Gender { get; set; }
@@ -23,6 +24,7 @@ namespace Core.Entities
         public bool? IsActive { get; set; }
         [MaxLength(36)]
         public string DocumentId { get; set; }
+        public string Note { get; set; }
         public virtual Document Document { get; set; }
         public virtual ICollection<StaffRole> StaffRoles { get; set; }
     }

@@ -1,6 +1,9 @@
 using API.Errors;
+using Core.Entities.Identity;
+using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -8,7 +11,12 @@ namespace API.Controllers
     public class BuggyController : BaseApiController
     {
         private readonly SunriseContext _context;
-        public BuggyController(SunriseContext context)
+
+        public BuggyController(
+            UserManager<AppUser> userManager,
+            IGenericRepository<Core.Entities.Staff> staffRepo,
+            SunriseContext context
+        ) : base(userManager, staffRepo)
         {
             _context = context;
         }
