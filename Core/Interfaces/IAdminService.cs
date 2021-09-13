@@ -17,5 +17,13 @@ namespace Core.Interfaces
         Task<bool> UpdateHazardAsync(Hazard model, string staffId);
         Task<bool> CreateNewHazardSWMSAsync(string hazardId, IReadOnlyList<string> swmsIds);
         Task<bool> UpdateHazardSWMSByHazardIdAsync(string hazardId, IReadOnlyList<string> swmsIds);
+        Task<IReadOnlyList<Entities.Task>> GetTaskByFilterAsync(BasePagingFilterModel filterModel);
+        Task<int> GetTaskCountByFilterAsync(BasePagingFilterModel filterModel);
+        Task<bool> CreateNewTaskAsync(Entities.Task model);
+        Task<bool> UpdateTaskAsync(Entities.Task model);
+        Task<bool> CreateNewRoleAsync(Role model);
+        Task<bool> UpdateRoleAsync(Role model, string staffId);
+        Task<bool> AddDocumentAsync(Document model);
+        Task<bool> DeleteDocumentAsync(Document model);
     }
 }

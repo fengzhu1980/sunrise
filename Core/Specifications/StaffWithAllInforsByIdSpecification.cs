@@ -8,6 +8,7 @@ namespace Core.Specifications
         {
             AddInclude(x => x.StaffRoles);
             AddInclude("StaffRoles.Role");
+            AddInclude(x => x.Document);
         }
     }
 }

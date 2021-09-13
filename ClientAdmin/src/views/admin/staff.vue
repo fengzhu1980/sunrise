@@ -9,7 +9,7 @@
             clearable
             class="filter-item"
             placeholder="Name, Notes..."
-            @keyup.enter.native="getHazard"
+            @keyup.enter.native="getStaff"
           />
         </div>
         <div class="app__search-btn">
@@ -17,26 +17,39 @@
             class="filter-item shadow"
             type="primary"
             icon="el-icon-search"
-            @click="getHazard"
+            @click="getStaff"
           >Search</el-button>
         </div>
       </div>
       <div class="app__search-right">
         <div>
-          <el-button class="shadow" type="primary" @click="handleAddNewHazard">Add New Hazard</el-button>
+          <el-button class="shadow" type="primary" @click="handleAddNewStaff">Add New Staff</el-button>
         </div>
       </div>
     </div>
     <!-- Search row end -->
-    <!-- Hazard list start -->
-    <el-table v-loading="listLoading" :max-height="winTableHeight" :data="hazardList" border fit>
+    <!-- Staff list start -->
+    <el-table v-loading="listLoading" :max-height="winTableHeight" :data="staffList" border fit>
       <el-table-column type="index" width="50" align="center" />
-      <el-table-column label="Title" width="250" align="center">
+      <el-table-column label="First Name" width="150" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdateHazard(scope.row, 'browse')">{{ scope.row.title }}</span>
+          <span class="link-type" @click="handleUpdateStaff(scope.row, 'browse')">{{ scope.row.firstName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Description" prop="description" align="center" />
+      <el-table-column label="Last Name" prop="lastName" align="center" />
+      <el-table-column label="Email" prop="email" align="center" />
+      <el-table-column label="Mobile" prop="mobile" align="center" />
+      <el-table-column label="Phone Number" prop="phoneNumber" align="center" />
+      <el-table-column label="Roles" prop="roles" align="center">
+        <template slot-scope="scope">
+          <el-tag
+            v-for="(role, index) in scope.row.roles"
+            :key="index"
+            class="staff__tag"
+            type="primary"
+          >{{ role }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="Is Active" width="100" align="center">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isActive | statusFilter">{{ scope.row.isActive | isActiveFilter }}</el-tag>
@@ -47,14 +60,14 @@
           <el-button
             type="primary"
             size="mini"
-            @click="handleUpdateHazard(scope.row, 'update')"
+            @click="handleUpdateStaff(scope.row, 'update')"
           >Edit</el-button>
-          <el-button v-if="scope.row.isActive" type="danger" size="mini" @click="changeHazardStatus(scope.row, false)">Inactivate</el-button>
-          <el-button v-else type="success" size="mini" @click="changeHazardStatus(scope.row, true)">Activate</el-button>
+          <el-button v-if="scope.row.isActive" type="danger" size="mini" @click="changeStaffStatus(scope.row, false)">Inactivate</el-button>
+          <el-button v-else type="success" size="mini" @click="changeStaffStatus(scope.row, true)">Activate</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- Hazard list end -->
+    <!-- Staff list end -->
     <!-- Pagination start -->
     <pagination
       v-show="total > 0"
@@ -63,36 +76,36 @@
       :page.sync="queryParams.pageNo"
       :limit.sync="queryParams.pageSize"
       :page-sizes="[20, 50, 100]"
-      @pagination="getHazard"
+      @pagination="getStaff"
     />
     <!-- Pagination end -->
-    <!-- Hazard dialog start -->
+    <!-- Staff dialog start -->
     <el-dialog
-      :visible.sync="hazardDialogVisible"
+      :visible.sync="staffDialogVisible"
       :title="titleMap[dialogStatus]"
-      @closed="handleHazardDialogClosed"
+      @closed="handleStaffDialogClosed"
     >
-      <i-create-hazard
+      <i-create-staff
         :dialog-status="dialogStatus"
-        :form="hazardForm"
+        :form="staffForm"
         @handleCancelClick="handleCancelClick"
         @handleActionBtnClick="handleActionBtnClick"
       />
     </el-dialog>
-    <!-- Hazard dialog end -->
+    <!-- Staff dialog end -->
   </div>
 </template>
 
 <script>
-import { getHazardList, updateHazard } from '@/api/admin'
+import { getStaffsByFilter, updateStaff } from '@/api/staff'
 import Pagination from '@/components/Pagination'
-import CreateHazard from '@/views/admin/components/createHazard'
+import CreateStaff from '@/views/admin/components/createStaff'
 
 export default {
-  name: 'HazardManagement',
+  name: 'StaffManagement',
   components: {
     Pagination,
-    iCreateHazard: CreateHazard
+    iCreateStaff: CreateStaff
   },
   filters: {
     isActiveFilter(value) {
@@ -132,19 +145,32 @@ export default {
         create: 'Create',
         browse: 'Browse'
       },
-      hazardForm: {
+      staffForm: {
         id: undefined,
-        title: '',
-        notes: '',
-        isActive: true
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        mobile: '',
+        phoneNumber: '',
+        email: '',
+        staffCode: '',
+        gender: '',
+        address: '',
+        isAdmin: false,
+        image: '',
+        documentId: '',
+        note: '',
+        isActive: true,
+        password: '',
+        roleIds: []
       },
-      hazardDialogVisible: false,
-      hazardList: [],
+      staffDialogVisible: false,
+      staffList: [],
       winTableHeight: 800
     }
   },
   created() {
-    this.getHazard()
+    this.getStaff()
   },
   updated() {
     this.$nextTick(() => {
@@ -156,44 +182,56 @@ export default {
     })
   },
   methods: {
-    getHazard() {
+    getStaff() {
       this.listLoading = true
-      getHazardList(this.queryParams).then(res => {
-        console.log('res', res)
+      getStaffsByFilter(this.queryParams).then(res => {
         this.total = res.count
-        this.hazardList = res.data
+        this.staffList = res.data
         this.listLoading = false
       }).catch(e => {
-        this.$message.error('Get hazard failed ' + e)
+        this.$message.error('Get staff failed ' + e)
         this.listLoading = false
       })
     },
     resetTemp() {
-      this.hazardForm = {
+      this.staffForm = {
         id: undefined,
-        title: '',
-        notes: '',
-        isActive: true
+        firstName: '',
+        middleName: '',
+        lastName: '',
+        mobile: '',
+        phoneNumber: '',
+        email: '',
+        staffCode: '',
+        gender: '',
+        address: '',
+        isAdmin: false,
+        image: '',
+        documentId: '',
+        note: '',
+        isActive: true,
+        password: '',
+        roleIds: []
       }
     },
-    handleAddNewHazard() {
+    handleAddNewStaff() {
       this.resetTemp()
       this.dialogStatus = 'create'
-      this.hazardDialogVisible = true
+      this.staffDialogVisible = true
     },
-    handleUpdateHazard(row, type) {
-      this.hazardForm = Object.assign({}, row) // copy obj
+    handleUpdateStaff(row, type) {
+      this.staffForm = Object.assign({}, row) // copy obj
       this.dialogStatus = type
-      this.hazardDialogVisible = true
+      this.staffDialogVisible = true
     },
-    handleHazardDialogClosed() {
+    handleStaffDialogClosed() {
       this.resetTemp()
     },
-    changeHazardStatus(val, status) {
+    changeStaffStatus(val, status) {
       const action = status ? 'Activate' : 'Inactivate'
       this.$confirm(
-        'Are you sure you want to ' + action + ' hazard ' +
-          val.title +
+        'Are you sure you want to ' + action + ' staff ' +
+          val.firstName +
           ' ?',
         'Warning',
         {
@@ -204,15 +242,17 @@ export default {
       ).then(() => {
         const params = {
           id: val.id,
-          title: val.title,
+          firstName: val.firstName,
+          email: val.email,
+          roleIds: val.roleIds,
           isActive: status
         }
-        updateHazard(params).then(res => {
+        updateStaff(params).then(res => {
           this.$message({
             type: 'success',
             message: action + ' successfully!'
           })
-          this.getHazard()
+          this.getStaff()
         }).catch(err => {
           this.$message({
             type: 'error',
@@ -222,14 +262,19 @@ export default {
       }).catch(() => {})
     },
     handleCancelClick() {
-      this.hazardDialogVisible = false
+      this.staffDialogVisible = false
     },
     handleActionBtnClick() {
-      this.hazardDialogVisible = false
-      this.getHazard()
+      this.staffDialogVisible = false
+      this.getStaff()
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.staff {
+  &__tag {
+    margin: .2rem;
+  }
+}
 </style>

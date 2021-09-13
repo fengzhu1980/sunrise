@@ -180,5 +180,107 @@ namespace Infrastructure.Services
             return await repo.CountAsync(countSpec);
         }
         #endregion Hazard
+
+        #region Task
+        public async Task<IReadOnlyList<Core.Entities.Task>> GetTaskByFilterAsync(BasePagingFilterModel filterModel)
+        {
+            var spec = new TaskSpecification(filterModel);
+            var repo = _unitOfWork.Repository<Core.Entities.Task>();
+
+            return await repo.ListAsync(spec);
+        }
+
+        public async Task<int> GetTaskCountByFilterAsync(BasePagingFilterModel filterModel)
+        {
+            var countSpec = new TaskForCountSpecification(filterModel);
+            var repo = _unitOfWork.Repository<Core.Entities.Task>();
+
+            return await repo.CountAsync(countSpec);
+        }
+
+        public async Task<bool> CreateNewTaskAsync(Core.Entities.Task model)
+        {
+            _unitOfWork.Repository<Core.Entities.Task>().Add(model);
+            var result = await _unitOfWork.Complete();
+
+            if (result <= 0) return false;
+            return true;
+        }
+
+        public async Task<bool> UpdateTaskAsync(Core.Entities.Task model)
+        {
+            var taskInDB = await _unitOfWork.Repository<Core.Entities.Task>().GetByIdAsync(model.Id);
+            if (taskInDB.Name != model.Name)
+            {
+                taskInDB.Name = model.Name;
+            }
+            if (taskInDB.TaskFee != model.TaskFee)
+            {
+                taskInDB.TaskFee = model.TaskFee;
+            }
+            if (taskInDB.Duration != model.Duration)
+            {
+                taskInDB.Duration = model.Duration;
+            }
+            if (taskInDB.IsActive != model.IsActive)
+            {
+                taskInDB.IsActive = model.IsActive;
+            }
+
+            _unitOfWork.Repository<Core.Entities.Task>().Update(taskInDB);
+            var result = await _unitOfWork.Complete();
+            if (result <= 0) return false;
+            return true;
+        }
+        #endregion Task End
+        #region Role
+        public async Task<bool> CreateNewRoleAsync(Role model)
+        {
+            _unitOfWork.Repository<Role>().Add(model);
+            var result = await _unitOfWork.Complete();
+
+            if (result <= 0) return false;
+            return true;
+        }
+
+        public async Task<bool> UpdateRoleAsync(Role model, string staffId)
+        {
+            var roleInDB = await _unitOfWork.Repository<Role>().GetByIdAsync(model.Id);
+            if (roleInDB.Name != model.Name)
+            {
+                roleInDB.Name = model.Name;
+            }
+            if (roleInDB.Note != model.Note)
+            {
+                roleInDB.Note = model.Note;
+            }
+            if (roleInDB.IsActive != model.IsActive)
+            {
+                roleInDB.IsActive = model.IsActive;
+            }
+            roleInDB.LastUpdatedByStaffId = staffId;
+
+            _unitOfWork.Repository<Role>().Update(roleInDB);
+            var result = await _unitOfWork.Complete();
+            if (result <= 0) return false;
+            return true;
+        }
+        #endregion Role
+        #region Upload
+        public async Task<bool> AddDocumentAsync(Document model)
+        {
+            _unitOfWork.Repository<Document>().Add(model);
+            var result = await _unitOfWork.Complete();
+
+            return result > 0;
+        }
+
+        public async Task<bool> DeleteDocumentAsync(Document model)
+        {
+            _unitOfWork.Repository<Document>().Delete(model);
+            var result = await _unitOfWork.Complete();
+            return result > 0;
+        }
+        #endregion Upload
     }
 }

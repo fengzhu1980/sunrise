@@ -18,12 +18,12 @@ namespace Infrastructure.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4")
                 .OldAnnotation("MySql:CharSet", "utf8mb4");
 
-            migrationBuilder.AddColumn<string>(
-                name: "Note",
-                table: "Staffs",
-                type: "longtext",
-                nullable: true)
-                .Annotation("MySql:CharSet", "utf8mb4");
+            // migrationBuilder.AddColumn<string>(
+            //     name: "Note",
+            //     table: "Staffs",
+            //     type: "longtext",
+            //     nullable: true)
+            //     .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AlterColumn<bool>(
                 name: "IsCompleted",
@@ -48,9 +48,9 @@ namespace Infrastructure.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Note",
-                table: "Staffs");
+            // migrationBuilder.DropColumn(
+            //     name: "Note",
+            //     table: "Staffs");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Email",

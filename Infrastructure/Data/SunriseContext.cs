@@ -33,6 +33,7 @@ namespace Infrastructure.Data
         public DbSet<StaffRole> StaffRoles { get; set; }
         public DbSet<Stage> Stages { get; set; }
         public DbSet<Task> Tasks { get; set; }
+        public DbSet<JobLine> JobLines { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -74,6 +75,12 @@ namespace Infrastructure.Data
             //         .WithOne(j => j.Job)
             //         .HasForeignKey(j => j.JobId);
             // });
+            modelBuilder.Entity<Job>(entity =>
+            {
+                entity.HasMany(j => j.JobLines)
+                    .WithOne(jl => jl.Job)
+                    .HasForeignKey(jl => jl.JobId);
+            });
 
             modelBuilder.Entity<Customer>(entity =>
             {

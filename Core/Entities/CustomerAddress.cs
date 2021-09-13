@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entities
 {
-    public class CustomerAddress
+    public class CustomerAddress : BaseEntity
     {
         [MaxLength(36)]
         public string CustomerId { get; set; }

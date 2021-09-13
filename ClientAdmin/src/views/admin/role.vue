@@ -9,7 +9,7 @@
             clearable
             class="filter-item"
             placeholder="Name, Notes..."
-            @keyup.enter.native="getHazard"
+            @keyup.enter.native="getRole"
           />
         </div>
         <div class="app__search-btn">
@@ -17,26 +17,26 @@
             class="filter-item shadow"
             type="primary"
             icon="el-icon-search"
-            @click="getHazard"
+            @click="getRole"
           >Search</el-button>
         </div>
       </div>
       <div class="app__search-right">
         <div>
-          <el-button class="shadow" type="primary" @click="handleAddNewHazard">Add New Hazard</el-button>
+          <el-button class="shadow" type="primary" @click="handleAddNewRole">Add New Role</el-button>
         </div>
       </div>
     </div>
     <!-- Search row end -->
-    <!-- Hazard list start -->
-    <el-table v-loading="listLoading" :max-height="winTableHeight" :data="hazardList" border fit>
+    <!-- Role list start -->
+    <el-table v-loading="listLoading" :max-height="winTableHeight" :data="roleList" border fit>
       <el-table-column type="index" width="50" align="center" />
-      <el-table-column label="Title" width="250" align="center">
+      <el-table-column label="Name" width="250" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdateHazard(scope.row, 'browse')">{{ scope.row.title }}</span>
+          <span class="link-type" @click="handleUpdateRole(scope.row, 'browse')">{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Description" prop="description" align="center" />
+      <el-table-column label="Note" prop="note" align="center" />
       <el-table-column label="Is Active" width="100" align="center">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isActive | statusFilter">{{ scope.row.isActive | isActiveFilter }}</el-tag>
@@ -47,14 +47,14 @@
           <el-button
             type="primary"
             size="mini"
-            @click="handleUpdateHazard(scope.row, 'update')"
+            @click="handleUpdateRole(scope.row, 'update')"
           >Edit</el-button>
-          <el-button v-if="scope.row.isActive" type="danger" size="mini" @click="changeHazardStatus(scope.row, false)">Inactivate</el-button>
-          <el-button v-else type="success" size="mini" @click="changeHazardStatus(scope.row, true)">Activate</el-button>
+          <el-button v-if="scope.row.isActive" type="danger" size="mini" @click="changeRoleStatus(scope.row, false)">Inactivate</el-button>
+          <el-button v-else type="success" size="mini" @click="changeRoleStatus(scope.row, true)">Activate</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- Hazard list end -->
+    <!-- Role list end -->
     <!-- Pagination start -->
     <pagination
       v-show="total > 0"
@@ -63,36 +63,36 @@
       :page.sync="queryParams.pageNo"
       :limit.sync="queryParams.pageSize"
       :page-sizes="[20, 50, 100]"
-      @pagination="getHazard"
+      @pagination="getRole"
     />
     <!-- Pagination end -->
-    <!-- Hazard dialog start -->
+    <!-- Role dialog start -->
     <el-dialog
-      :visible.sync="hazardDialogVisible"
+      :visible.sync="roleDialogVisible"
       :title="titleMap[dialogStatus]"
-      @closed="handleHazardDialogClosed"
+      @closed="handleRoleDialogClosed"
     >
-      <i-create-hazard
+      <i-create-role
         :dialog-status="dialogStatus"
-        :form="hazardForm"
+        :form="roleForm"
         @handleCancelClick="handleCancelClick"
         @handleActionBtnClick="handleActionBtnClick"
       />
     </el-dialog>
-    <!-- Hazard dialog end -->
+    <!-- Role dialog end -->
   </div>
 </template>
 
 <script>
-import { getHazardList, updateHazard } from '@/api/admin'
+import { getAllRolesByFilter, updateRole } from '@/api/admin'
 import Pagination from '@/components/Pagination'
-import CreateHazard from '@/views/admin/components/createHazard'
+import CreateRole from '@/views/admin/components/createRole'
 
 export default {
-  name: 'HazardManagement',
+  name: 'RoleManagement',
   components: {
     Pagination,
-    iCreateHazard: CreateHazard
+    iCreateRole: CreateRole
   },
   filters: {
     isActiveFilter(value) {
@@ -132,19 +132,19 @@ export default {
         create: 'Create',
         browse: 'Browse'
       },
-      hazardForm: {
+      roleForm: {
         id: undefined,
-        title: '',
-        notes: '',
+        name: '',
+        note: '',
         isActive: true
       },
-      hazardDialogVisible: false,
-      hazardList: [],
+      roleDialogVisible: false,
+      roleList: [],
       winTableHeight: 800
     }
   },
   created() {
-    this.getHazard()
+    this.getRole()
   },
   updated() {
     this.$nextTick(() => {
@@ -156,44 +156,43 @@ export default {
     })
   },
   methods: {
-    getHazard() {
+    getRole() {
       this.listLoading = true
-      getHazardList(this.queryParams).then(res => {
-        console.log('res', res)
-        this.total = res.count
-        this.hazardList = res.data
+      getAllRolesByFilter(this.queryParams).then(res => {
+        // this.total = res.count
+        this.roleList = res.data
         this.listLoading = false
       }).catch(e => {
-        this.$message.error('Get hazard failed ' + e)
+        this.$message.error('Get role failed ' + e)
         this.listLoading = false
       })
     },
     resetTemp() {
-      this.hazardForm = {
+      this.roleForm = {
         id: undefined,
-        title: '',
-        notes: '',
+        name: '',
+        note: '',
         isActive: true
       }
     },
-    handleAddNewHazard() {
+    handleAddNewRole() {
       this.resetTemp()
       this.dialogStatus = 'create'
-      this.hazardDialogVisible = true
+      this.roleDialogVisible = true
     },
-    handleUpdateHazard(row, type) {
-      this.hazardForm = Object.assign({}, row) // copy obj
+    handleUpdateRole(row, type) {
+      this.roleForm = Object.assign({}, row) // copy obj
       this.dialogStatus = type
-      this.hazardDialogVisible = true
+      this.roleDialogVisible = true
     },
-    handleHazardDialogClosed() {
+    handleRoleDialogClosed() {
       this.resetTemp()
     },
-    changeHazardStatus(val, status) {
+    changeRoleStatus(val, status) {
       const action = status ? 'Activate' : 'Inactivate'
       this.$confirm(
-        'Are you sure you want to ' + action + ' hazard ' +
-          val.title +
+        'Are you sure you want to ' + action + ' role ' +
+          val.name +
           ' ?',
         'Warning',
         {
@@ -204,15 +203,15 @@ export default {
       ).then(() => {
         const params = {
           id: val.id,
-          title: val.title,
+          name: val.name,
           isActive: status
         }
-        updateHazard(params).then(res => {
+        updateRole(params).then(res => {
           this.$message({
             type: 'success',
             message: action + ' successfully!'
           })
-          this.getHazard()
+          this.getRole()
         }).catch(err => {
           this.$message({
             type: 'error',
@@ -222,11 +221,11 @@ export default {
       }).catch(() => {})
     },
     handleCancelClick() {
-      this.hazardDialogVisible = false
+      this.roleDialogVisible = false
     },
     handleActionBtnClick() {
-      this.hazardDialogVisible = false
-      this.getHazard()
+      this.roleDialogVisible = false
+      this.getRole()
     }
   }
 }

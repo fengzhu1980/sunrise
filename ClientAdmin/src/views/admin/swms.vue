@@ -6,6 +6,7 @@
         <div class="app__search-keyword">
           <el-input
             v-model="queryParams.keyword"
+            clearable
             class="filter-item"
             placeholder="Name, Notes..."
             @keyup.enter.native="getSWMS"

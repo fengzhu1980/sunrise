@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entities
 {
-    public class JobTask
+    public class JobTask : BaseEntity
     {
         [MaxLength(36)]
         public string JobId { get; set; }

@@ -117,11 +117,11 @@ export const asyncRoutes = [
     },
     children: [
       {
-        path: 'user',
-        component: () => import('@/views/admin/user'),
-        name: 'UserManagement',
+        path: 'staff',
+        component: () => import('@/views/admin/staff'),
+        name: 'StaffManagement',
         meta: {
-          title: 'User Management',
+          title: 'Staff Management',
           roles: ['admin'] // or you can only set roles in sub nav
         }
       },
@@ -142,6 +142,24 @@ export const asyncRoutes = [
           title: 'SWMS Management',
           roles: ['admin']
         }
+      },
+      {
+        path: 'task',
+        component: () => import('@/views/admin/task'),
+        name: 'TaskManagement',
+        meta: {
+          title: 'Task Management',
+          roles: ['admin']
+        }
+      },
+      {
+        path: 'role',
+        component: () => import('@/views/admin/role'),
+        name: 'RoleManagement',
+        meta: {
+          title: 'Role Management',
+          roles: ['admin']
+        }
       }
     ]
   },
@@ -154,7 +172,7 @@ export const asyncRoutes = [
     meta: {
       title: 'Permission',
       icon: 'lock',
-      roles: ['admin', 'editor'] // you can set roles in root nav
+      roles: ['admin', 'staff'] // you can set roles in root nav
     },
     children: [
       {

@@ -28,6 +28,8 @@ namespace Core.Specifications
             }
 
             AddInclude(x => x.StaffRoles);
+            AddInclude("StaffRoles.Role");
+            AddInclude(x => x.Document);
             ApplyPaging(filterModel.PageSize * (filterModel.PageNo - 1), filterModel.PageSize);
         }
     }

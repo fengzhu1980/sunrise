@@ -9,6 +9,7 @@ namespace Core.Specifications
             AddCriteria(x => x.UserId == id);
             AddInclude(x => x.StaffRoles);
             AddInclude("StaffRoles.Role");
+            AddInclude(x => x.Document);
         }
     }
 }

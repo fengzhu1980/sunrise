@@ -26,6 +26,10 @@ namespace Core.Specifications
             {
                 AddCriteria(x => x.IsAdmin == filterModel.IsAdmin);
             }
+
+            AddInclude(x => x.StaffRoles);
+            AddInclude("StaffRoles.Role");
+            AddInclude(x => x.Document);
         }
     }
 }

@@ -115,7 +115,6 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    console.log('res', res)
 
     // if the custom code is not 20000, it is judged as an error.
     if (response.status !== 200) {
@@ -150,9 +149,7 @@ service.interceptors.response.use(
       const resp = error.response
       var errorMessage = error.message
       if (resp.status === 400) {
-        if (resp.data.errors) {
-          errorMessage = resp.data.errors[0]
-        }
+        errorMessage = `${resp.data.message}, ${resp.data.statusCode}`
       }
       if (resp.status === 401) {
         errorMessage = `${resp.data.message}, ${resp.data.statusCode}`

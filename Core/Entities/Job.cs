@@ -56,5 +56,6 @@ namespace Core.Entities
         public virtual ICollection<JobHazard> JobHazards { get; set; }
         public virtual ICollection<JobTask> JobTasks { get; set; }
         public virtual ICollection<JobLog> JobLogs { get; set; }
+        public virtual ICollection<JobLine> JobLines { get; set; }
     }
 }

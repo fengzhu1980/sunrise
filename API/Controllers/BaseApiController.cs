@@ -24,6 +24,7 @@ namespace API.Controllers
             _userManager = userManager;
         }
 
+        [HttpPost("[action]")]
         public async Task<Staff> GetCurrentStaffInfo()
         {
             var user = await _userManager.FindByEmailFromClaimsPrinciple(User);

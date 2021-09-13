@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core.Entities
 {
-    public class NoteDocument
+    public class NoteDocument : BaseEntity
     {
         [MaxLength(36)]
         public string NoteId { get; set; }

@@ -1,10 +1,14 @@
 <template>
   <div class="dashboard-editor-container">
+    <div class="info-container">
+      <span class="display_name">{{ `Hello, ${name}` }}</span>
+    </div>
     <panel-group @handleSetLineChartData="handleSetLineChartData" />
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import PanelGroup from './components/PanelGroup'
 
 const lineChartData = {
@@ -36,6 +40,13 @@ export default {
       lineChartData: lineChartData.newVisitis
     }
   },
+  computed: {
+    ...mapGetters([
+      'name',
+      'avatar',
+      'roles'
+    ])
+  },
   methods: {
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]
@@ -49,13 +60,6 @@ export default {
   padding: 32px;
   background-color: rgb(240, 242, 245);
   position: relative;
-
-  .github-corner {
-    position: absolute;
-    top: 0px;
-    border: 0;
-    right: 0;
-  }
 
   .chart-wrapper {
     background: #fff;

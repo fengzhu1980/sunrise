@@ -29,7 +29,7 @@ namespace API.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("[action]")]
         public async Task<UserDto> GetCurrentUser()
         {
             var email = User.FindFirstValue(ClaimTypes.Email);

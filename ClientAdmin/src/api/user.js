@@ -40,3 +40,12 @@ export function refreshToken(data) {
     }
   })
 }
+
+// Email
+export function emailexists(params) {
+  return request({
+    url: '/api/account/emailexists',
+    method: 'get',
+    params
+  })
+}

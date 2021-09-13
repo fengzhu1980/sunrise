@@ -32,6 +32,10 @@ namespace API
             _configuration.Bind("Token", authenticationConfiguration);
             services.AddSingleton(authenticationConfiguration);
 
+            WebConfiguration webConfiguration = new WebConfiguration();
+            _configuration.Bind("WebConfig", webConfiguration);
+            services.AddSingleton(webConfiguration);
+
             var sunriseConnectionString = _configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<SunriseContext>(x => x.UseMySql(sunriseConnectionString, ServerVersion.AutoDetect(sunriseConnectionString)));
             var identityConnectionString = _configuration.GetConnectionString("IdentityConnection");
