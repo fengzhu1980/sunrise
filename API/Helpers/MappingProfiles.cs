@@ -13,7 +13,27 @@ namespace API.Helpers
         {
             CreateMap<Job, JobToReturnDto>()
                 .ForMember(d => d.CreatedByStaff, o => o.MapFrom(s => s.CreatedByStaff.FirstName))
-                .ForMember(d => d.BeforePhotos, o => o.MapFrom(s => s.BeforePhotos));
+                .ForMember(d => d.BeforePhotos, o => o.MapFrom(s => s.BeforePhotos.Select(bp => bp.Document)))
+                .ForMember(d => d.AfterPhotos, o => o.MapFrom(s => s.AfterPhotos.Select(ap => ap.Document)))
+                .ForMember(d => d.AssignedToStaff, o => o.MapFrom(s => s.AssignedToStaff.FirstName))
+                .ForMember(d => d.OriginalAssignedToStaff, o => o.MapFrom(s => s.OriginalAssignedToStaff.FirstName))
+                .ForMember(d => d.CreatedByStaff, o => o.MapFrom(s => s.CreatedByStaff.FirstName))
+                .ForMember(d => d.LastModifiedByStaff, o => o.MapFrom(s => s.LastModifiedByStaff.FirstName))
+                .ForMember(d => d.JobStage, o => o.MapFrom(s => s.JobStage.Name))
+                .ForMember(d => d.JobHazardIds, o => o.MapFrom(s => s.JobHazards.Select(jh => jh.HazardId)))
+                .ForMember(d => d.JobLines, o => o.MapFrom(s => s.JobLines.ToList()))
+                .ForMember(d => d.RelatedNotes, o => o.MapFrom(s => s.RelatedNotes.Select(rn => rn.Note)))
+                .ForMember(d => d.BeforePhotoIds, o => o.MapFrom(s => s.BeforePhotos.Select(bp => bp.DocumentId)))
+                .ForMember(d => d.AfterPhotoIds, o => o.MapFrom(s => s.AfterPhotos.Select(ap => ap.DocumentId)))
+                .ReverseMap();
+
+            CreateMap<JobLine, JobLineReturnDto>()
+                .ReverseMap();
+            CreateMap<Note, NoteToReturnDto>()
+                .ReverseMap();
+
+            CreateMap<Job, JobToAddModel>()
+                .ReverseMap();
 
             CreateMap<Document, DocumentToReturnDto>()
                 .ForMember(d => d.UploadedByStaff, o => o.MapFrom(s => s.UploadedByStaff.FirstName))

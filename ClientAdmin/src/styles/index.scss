@@ -171,6 +171,15 @@ aside {
   }
 }
 
+.shadow-mouse-over
+{
+  transition: all 0.5s;
+  &:hover {
+    box-shadow: 5px 5px 10px #dddddd;
+    // transform: translate3d(0,-2px,0);
+  }
+}
+
 .btn {
   &__box {
     display: flex;

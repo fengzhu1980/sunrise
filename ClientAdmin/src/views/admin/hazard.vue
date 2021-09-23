@@ -159,7 +159,6 @@ export default {
     getHazard() {
       this.listLoading = true
       getHazardList(this.queryParams).then(res => {
-        console.log('res', res)
         this.total = res.count
         this.hazardList = res.data
         this.listLoading = false

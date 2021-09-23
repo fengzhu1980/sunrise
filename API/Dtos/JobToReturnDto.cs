@@ -31,13 +31,18 @@ namespace API.Dtos
         public string FormTitle { get; set; }
         public string FormDescription { get; set; }
         public string AssignedToStaff { get; set; }
+        public string AssignedToStaffId { get; set; }
         public string OriginalAssignedToStaff { get; set; }
         public string CreatedByStaff { get; set; }
         public string LastModifiedByStaff { get; set; }
         public string JobStage { get; set; }
         public List<DocumentToReturnDto> BeforePhotos { get; set; }
-        // public List<JobAfterPhoto> AfterPhotos { get; set; }
-        // public List<JobNote> RelatedNotes { get; set; }
+        public List<DocumentToReturnDto> AfterPhotos { get; set; }
+        public List<NoteToReturnDto> RelatedNotes { get; set; }
+        public List<string> BeforePhotoIds { get; set; }
+        public List<string> AfterPhotoIds { get; set; }
+        public List<string> JobHazardIds { get; set; }
+        public List<JobLineReturnDto> JobLines { get; set; }
         // public List<JobHazard> JobHazards { get; set; }
         // public List<JobTask> JobTasks { get; set; }
         // public List<JobLog> JobLogs { get; set; }

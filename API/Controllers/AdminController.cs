@@ -25,6 +25,7 @@ namespace API.Controllers
         private readonly IGenericRepository<Role> _roleRepo;
         private readonly WebConfiguration _config;
         private readonly IGenericRepository<Document> _documentRepo;
+        private readonly IGenericRepository<Hazard> _hazardRepo;
 
         public AdminController(
             UserManager<AppUser> userManager,
@@ -33,7 +34,8 @@ namespace API.Controllers
             IAdminService adminService,
             IMapper mapper,
             WebConfiguration config,
-            IGenericRepository<Document> documentRepo
+            IGenericRepository<Document> documentRepo,
+            IGenericRepository<Hazard> hazardRepo
         ) : base(userManager, staffRepo)
         {
             _adminService = adminService;
@@ -41,6 +43,7 @@ namespace API.Controllers
             _roleRepo = roleRepo;
             _config = config;
             _documentRepo = documentRepo;
+            _hazardRepo = hazardRepo;
         }
 
         #region SWMS
@@ -76,6 +79,16 @@ namespace API.Controllers
         #endregion SWMS
 
         #region Hazard
+        [Authorize]
+        [HttpGet("[action]")]
+        public async Task<ActionResult<IReadOnlyList<HazardToReturnDto>>> GetAllHazards()
+        {
+            var hazards = await _hazardRepo.ListAllAsync();
+            var data = _mapper.Map<IReadOnlyList<Hazard>, IReadOnlyList<HazardToReturnDto>>(hazards);
+
+            return Ok(data);
+        }
+
         [Authorize]
         [HttpGet("getHazardList")]
         public async Task<ActionResult<Pagination<HazardToReturnDto>>> GetHazard([FromQuery] BasePagingFilterModel filterModel)

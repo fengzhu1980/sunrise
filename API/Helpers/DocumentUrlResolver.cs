@@ -17,7 +17,7 @@ namespace API.Helpers
         {
             if (!string.IsNullOrEmpty(source.RelativeFilePath))
             {
-                return _config["ApiUrl"] + source.RelativeFilePath + source.FileName;
+                return _config["ApiUrl"] + source.RelativeFilePath;
             }
 
             return null;

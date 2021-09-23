@@ -164,6 +164,57 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/job',
+    component: Layout,
+    redirect: '/job/list',
+    alwaysShow: true, // will always show the root menu
+    name: 'Job',
+    meta: {
+      title: 'Job',
+      icon: 'lock',
+      roles: ['admin', 'staff'] // you can set roles in root nav
+    },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/job/list'),
+        name: 'JobList',
+        meta: {
+          title: 'Job List',
+          roles: ['admin'] // or you can only set roles in sub nav
+        }
+      },
+      {
+        path: 'new',
+        component: () => import('@/views/job/new'),
+        name: 'NewJob',
+        meta: {
+          title: 'New Job',
+          roles: ['admin', 'staff'] // you can set roles in root nav
+        }
+      },
+      {
+        path: 'update',
+        component: () => import('@/views/job/update'),
+        name: 'UpdateJob',
+        meta: {
+          title: 'Update Job',
+          roles: ['admin']
+        },
+        hidden: true
+      },
+      {
+        path: 'stage',
+        component: () => import('@/views/job/stage'),
+        name: 'StageManagement',
+        meta: {
+          title: 'Job Stage',
+          roles: ['admin']
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',

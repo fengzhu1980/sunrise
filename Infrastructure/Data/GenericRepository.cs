@@ -71,5 +71,23 @@ namespace Infrastructure.Data
         {
             _context.Set<T>().RemoveRange(entities);
         }
+
+        public void UpdateList(IReadOnlyList<T> entities)
+        {
+            _context.Set<T>().AttachRange(entities);
+            _context.Entry(entities).State = EntityState.Modified;
+        }
+
+        // public void DetachLocal(T entity, string entryId)
+        // {
+        //     var local = _context.Set<T>()
+        //         .Local
+        //         .FirstOrDefault(entry => entry.Id.Equals(entryId));
+        //     if (local != null)
+        //     {
+        //         _context.Entry(local).State = EntityState.Detached;
+        //     }
+        //     _context.Entry(entity).State = EntityState.Modified;
+        // }
     }
 }

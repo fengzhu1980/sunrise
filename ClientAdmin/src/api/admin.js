@@ -34,6 +34,13 @@ export function updateSWMSStatus(data) {
 }
 
 // Hazard Management
+export function getAllHazards() {
+  return request({
+    url: '/api/admin/getAllHazards',
+    method: 'get'
+  })
+}
+
 export function getHazardList(params) {
   return request({
     url: '/api/admin/getHazardList',

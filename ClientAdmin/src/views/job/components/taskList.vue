@@ -5,6 +5,7 @@
       <div class="app__search-left">
         <div class="app__search-keyword">
           <el-input
+            ref="keyword"
             v-model="queryParams.keyword"
             clearable
             class="filter-item"
@@ -41,6 +42,15 @@
       <el-table-column label="Is Active" width="100" align="center">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isActive | statusFilter">{{ scope.row.isActive | isActiveFilter }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" label="Operations" align="center" width="200">
+        <template slot-scope="scope">
+          <el-button
+            type="success"
+            size="mini"
+            @click="selectTask(scope.row)"
+          >Select</el-button>
         </template>
       </el-table-column>
       <el-table-column fixed="right" label="Operations" align="center" width="200">
@@ -118,6 +128,13 @@ export default {
       return statusMap[status]
     }
   },
+  props: {
+    keywordInputReFocus: {
+      default: false,
+      type: Boolean,
+      required: false
+    }
+  },
   data() {
     return {
       total: 0,
@@ -145,8 +162,14 @@ export default {
       winTableHeight: 800
     }
   },
+  watch: {
+    keywordInputReFocus() {
+      this.reFocusInput()
+    }
+  },
   created() {
     this.getTask()
+    this.reFocusInput()
   },
   updated() {
     this.$nextTick(() => {
@@ -169,6 +192,13 @@ export default {
         this.listLoading = false
       })
     },
+    reFocusInput() {
+      this.$nextTick(_ => {
+        if (this.$refs.keyword.$el) {
+          this.$refs.keyword.$el.querySelector('input').focus()
+        }
+      })
+    },
     resetTemp() {
       this.taskForm = {
         id: undefined,
@@ -177,6 +207,9 @@ export default {
         duration: 0,
         isActive: true
       }
+    },
+    selectTask(row) {
+      this.$emit('returnTask', row)
     },
     handleAddNewTask() {
       this.resetTemp()

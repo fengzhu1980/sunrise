@@ -24,6 +24,7 @@ namespace Core.Specifications
             AddInclude("JobTasks.Task");
             AddInclude(x => x.JobLogs);
             AddInclude("JobLogs.Log");
+            AddInclude(x => x.JobLines);
         }
     }
 }

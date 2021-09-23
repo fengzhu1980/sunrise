@@ -139,7 +139,6 @@ export default {
     getSWMS() {
       this.listLoading = true
       getSWMSList().then(res => {
-        console.log('res', res)
         this.swmsOptions = res.data
         this.listLoading = false
       }).catch(e => {

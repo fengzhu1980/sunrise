@@ -16,6 +16,7 @@ namespace Core.Interfaces
         void Update(T entity);
         void Delete(T entity);
         void AddList(IReadOnlyList<T> entities);
+        void UpdateList(IReadOnlyList<T> entities);
         void DeleteList(IReadOnlyList<T> entities);
     }
 }

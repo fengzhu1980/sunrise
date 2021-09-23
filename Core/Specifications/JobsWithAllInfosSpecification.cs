@@ -66,6 +66,7 @@ namespace Core.Specifications
             AddInclude("JobTasks.Task");
             AddInclude(x => x.JobLogs);
             AddInclude("JobLogs.Log");
+            AddInclude(x => x.JobLines);
             AddOrderBy(x => x.CreatedOnUtc);
             ApplyPaging(filterModel.PageSize * (filterModel.PageNo - 1), filterModel.PageSize);
 

@@ -159,7 +159,6 @@ export default {
     getSWMS() {
       this.listLoading = true
       getSWMSList(this.queryParams).then(res => {
-        console.log('res', res)
         this.total = res.count
         this.swmsList = res.data
         this.listLoading = false

@@ -9,7 +9,7 @@
             clearable
             class="filter-item"
             placeholder="Name, Notes..."
-            @keyup.enter.native="getTask"
+            @keyup.enter.native="getStage"
           />
         </div>
         <div class="app__search-btn">
@@ -17,27 +17,27 @@
             class="filter-item shadow"
             type="primary"
             icon="el-icon-search"
-            @click="getTask"
+            @click="getStage"
           >Search</el-button>
         </div>
       </div>
       <div class="app__search-right">
         <div>
-          <el-button class="shadow" type="primary" @click="handleAddNewTask">Add New Task</el-button>
+          <el-button class="shadow" type="primary" @click="handleAddNewStage">Add New Stage</el-button>
         </div>
       </div>
     </div>
     <!-- Search row end -->
-    <!-- Task list start -->
-    <el-table v-loading="listLoading" :max-height="winTableHeight" :data="taskList" border fit>
+    <!-- Stage list start -->
+    <el-table v-loading="listLoading" :max-height="winTableHeight" :data="stageList" border fit>
       <el-table-column type="index" width="50" align="center" />
       <el-table-column label="Name" width="250" align="center">
         <template slot-scope="scope">
-          <span class="link-type" @click="handleUpdateTask(scope.row, 'browse')">{{ scope.row.name }}</span>
+          <span class="link-type" @click="handleUpdateStage(scope.row, 'browse')">{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Task Fee($)" prop="taskFee" align="center" />
-      <el-table-column label="Duration(Hour)" prop="duration" align="center" />
+      <el-table-column label="Notes" prop="notes" align="center" />
+      <el-table-column label="Priority" prop="priority" align="center" />
       <el-table-column label="Is Active" width="100" align="center">
         <template slot-scope="scope">
           <el-tag :type="scope.row.isActive | statusFilter">{{ scope.row.isActive | isActiveFilter }}</el-tag>
@@ -48,14 +48,14 @@
           <el-button
             type="primary"
             size="mini"
-            @click="handleUpdateTask(scope.row, 'update')"
+            @click="handleUpdateStage(scope.row, 'update')"
           >Edit</el-button>
-          <el-button v-if="scope.row.isActive" type="danger" size="mini" @click="changeTaskStatus(scope.row, false)">Inactivate</el-button>
-          <el-button v-else type="success" size="mini" @click="changeTaskStatus(scope.row, true)">Activate</el-button>
+          <el-button v-if="scope.row.isActive" type="danger" size="mini" @click="changeStageStatus(scope.row, false)">Inactivate</el-button>
+          <el-button v-else type="success" size="mini" @click="changeStageStatus(scope.row, true)">Activate</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- Task list end -->
+    <!-- Stage list end -->
     <!-- Pagination start -->
     <pagination
       v-show="total > 0"
@@ -64,36 +64,36 @@
       :page.sync="queryParams.pageNo"
       :limit.sync="queryParams.pageSize"
       :page-sizes="[20, 50, 100]"
-      @pagination="getTask"
+      @pagination="getStage"
     />
     <!-- Pagination end -->
-    <!-- Task dialog start -->
+    <!-- Stage dialog start -->
     <el-dialog
-      :visible.sync="taskDialogVisible"
+      :visible.sync="stageDialogVisible"
       :title="titleMap[dialogStatus]"
-      @closed="handleTaskDialogClosed"
+      @closed="handleStageDialogClosed"
     >
-      <i-create-task
+      <i-create-stage
         :dialog-status="dialogStatus"
-        :form="taskForm"
+        :form="stageForm"
         @handleCancelClick="handleCancelClick"
         @handleActionBtnClick="handleActionBtnClick"
       />
     </el-dialog>
-    <!-- Task dialog end -->
+    <!-- Stage dialog end -->
   </div>
 </template>
 
 <script>
-import { getTaskList, updateTask } from '@/api/admin'
+import { getAllJobStagesByFilter, updateJobStage } from '@/api/job'
 import Pagination from '@/components/Pagination'
-import CreateTask from '@/views/admin/components/createTask'
+import CreateStage from '@/views/job/components/createStage'
 
 export default {
-  name: 'TaskManagement',
+  name: 'StageManagement',
   components: {
     Pagination,
-    iCreateTask: CreateTask
+    iCreateStage: CreateStage
   },
   filters: {
     isActiveFilter(value) {
@@ -133,20 +133,20 @@ export default {
         create: 'Create',
         browse: 'Browse'
       },
-      taskForm: {
+      stageForm: {
         id: undefined,
         name: '',
-        taskFee: 0,
-        duration: 0,
+        notes: '',
+        priority: 0,
         isActive: true
       },
-      taskDialogVisible: false,
-      taskList: [],
+      stageDialogVisible: false,
+      stageList: [],
       winTableHeight: 800
     }
   },
   created() {
-    this.getTask()
+    this.getStage()
   },
   updated() {
     this.$nextTick(() => {
@@ -158,43 +158,42 @@ export default {
     })
   },
   methods: {
-    getTask() {
+    getStage() {
       this.listLoading = true
-      getTaskList(this.queryParams).then(res => {
+      getAllJobStagesByFilter(this.queryParams).then(res => {
         this.total = res.count
-        this.taskList = res.data
+        this.stageList = res.data
         this.listLoading = false
       }).catch(e => {
-        this.$message.error('Get task failed ' + e)
         this.listLoading = false
       })
     },
     resetTemp() {
-      this.taskForm = {
+      this.stageForm = {
         id: undefined,
         name: '',
-        taskFee: 0,
-        duration: 0,
+        notes: '',
+        priority: 0,
         isActive: true
       }
     },
-    handleAddNewTask() {
+    handleAddNewStage() {
       this.resetTemp()
       this.dialogStatus = 'create'
-      this.taskDialogVisible = true
+      this.stageDialogVisible = true
     },
-    handleUpdateTask(row, type) {
-      this.taskForm = Object.assign({}, row) // copy obj
+    handleUpdateStage(row, type) {
+      this.stageForm = Object.assign({}, row) // copy obj
       this.dialogStatus = type
-      this.taskDialogVisible = true
+      this.stageDialogVisible = true
     },
-    handleTaskDialogClosed() {
+    handleStageDialogClosed() {
       this.resetTemp()
     },
-    changeTaskStatus(val, status) {
+    changeStageStatus(val, status) {
       const action = status ? 'Activate' : 'Inactivate'
       this.$confirm(
-        'Are you sure you want to ' + action + ' task ' +
+        'Are you sure you want to ' + action + ' stage ' +
           val.name +
           ' ?',
         'Warning',
@@ -209,12 +208,12 @@ export default {
           name: val.name,
           isActive: status
         }
-        updateTask(params).then(res => {
+        updateJobStage(params).then(res => {
           this.$message({
             type: 'success',
             message: action + ' successfully!'
           })
-          this.getTask()
+          this.getStage()
         }).catch(err => {
           this.$message({
             type: 'error',
@@ -224,11 +223,11 @@ export default {
       }).catch(() => {})
     },
     handleCancelClick() {
-      this.taskDialogVisible = false
+      this.stageDialogVisible = false
     },
     handleActionBtnClick() {
-      this.taskDialogVisible = false
-      this.getTask()
+      this.stageDialogVisible = false
+      this.getStage()
     }
   }
 }

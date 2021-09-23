@@ -17,6 +17,7 @@ namespace API.Extensions
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IJobRepository, JobRepository>();
             services.AddScoped<IStaffService, StaffService>();
+            services.AddScoped<IJobService, JobService>();
             services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
             services.Configure<ApiBehaviorOptions>(options =>
             {
